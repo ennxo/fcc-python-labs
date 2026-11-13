@@ -2,12 +2,16 @@
 # https://www.freecodecamp.org/learn/python-v9/lab-isbn-validator/debug-an-isbn-validator
 
 def validate_isbn(isbn, length):
-    if len(isbn, length) != length:
+    if len(isbn) != length:
         print(f'ISBN-{length} code should be {length} digits long.')
         return
-    main_digits = isbn[0:length]
-    given_check_digit = isbn[length]
-    main_digits_list = [int(digit) for digit in main_digits]
+    main_digits = isbn[0:length - 1]
+    given_check_digit = isbn[length - 1]
+    try:
+        main_digits_list = [int(digit) for digit in main_digits]
+    except ValueError:
+        print('Invalid character was found.')
+        return
     # Calculate the check digit from other digits
     if length == 10:
         expected_check_digit = calculate_check_digit_10(main_digits_list)
@@ -57,13 +61,18 @@ def calculate_check_digit_13(main_digits_list):
         expected_check_digit = str(result)
     return expected_check_digit
 def main():
-    user_input = input('Enter ISBN and length: ')
-    values = user_input.split(',')
-    isbn = values[0]
-    length = int(values[1])
-    if length == 10 or length == 13:
-    validate_isbn(isbn, length)
-    else:
-    print('Length should be 10 or 13.')
+    try: 
+        user_input = input('Enter ISBN and length: ')
+        values = user_input.split(',')
+        isbn = values[0]
+        length = int(values[1])
+        if length == 10 or length == 13:
+            validate_isbn(isbn, length)
+        else:
+            print('Length should be 10 or 13.')
+    except IndexError:
+        print('Enter comma-separated values.')
+    except ValueError:
+        print('Length must be a number.')
 
 main()
